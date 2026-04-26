@@ -5,22 +5,21 @@
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
-    "build": "node node_modules/prisma/build/index.js generate",
+    "build": "npx prisma generate",
+    "postinstall": "npx prisma generate",
     "db:push": "npx prisma db push",
-    "db:seed": "node prisma/seed.js",
-    "db:studio": "npx prisma studio"
+    "db:seed": "node prisma/seed.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@prisma/client": "^5.10.0",
+    "prisma": "^5.10.0",
     "bcryptjs": "^2.4.3",
     "jose": "^5.2.3",
     "express": "^4.18.2",
     "dotenv": "^16.4.5"
   },
-  "devDependencies": {
-    "prisma": "^5.10.0"
-  }
+  "devDependencies": {}
 }
