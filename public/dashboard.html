@@ -756,29 +756,45 @@ canvas.sparkline { display: block; }
 </div>
 
 <div id="connect-screen" class="connect-screen" style="position:fixed;inset:0;z-index:200;display:none;">
-  <div class="connect-box">
+  <div class="connect-box" style="max-width:500px;">
     <div class="connect-logo">W</div>
-    <h2>Connect your Wix site</h2>
-    <p>Authorize WixDash to read your bookings, clients, services, orders, and staff — all read-only, never modified.</p>
+    <h2>Conectar seu site Wix</h2>
+    <p>Cole sua API Key e Site ID do painel Wix para importar seus dados automaticamente.</p>
 
-    <div class="connect-perms">
-      <div class="perm-item"><span class="perm-check">✓</span> Read bookings & appointments</div>
-      <div class="perm-item"><span class="perm-check">✓</span> Read contacts & clients</div>
-      <div class="perm-item"><span class="perm-check">✓</span> Read services catalog</div>
-      <div class="perm-item"><span class="perm-check">✓</span> Read orders & payments</div>
-      <div class="perm-item"><span class="perm-check">✓</span> Read staff members</div>
+    <div style="margin:20px 0;text-align:left;">
+      <div style="margin-bottom:12px;">
+        <label style="font-size:12px;font-weight:500;color:var(--ink-3);display:block;margin-bottom:6px;">API KEY</label>
+        <input id="wix-api-key" type="password" placeholder="Cole sua Wix API Key aqui" style="width:100%;padding:10px 12px;border:1px solid var(--border-strong);border-radius:8px;font-size:13px;font-family:var(--sans);outline:none;background:var(--white);">
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:12px;font-weight:500;color:var(--ink-3);display:block;margin-bottom:6px;">SITE ID</label>
+        <input id="wix-site-id" type="text" placeholder="Ex: a1b2c3d4-e5f6-..." style="width:100%;padding:10px 12px;border:1px solid var(--border-strong);border-radius:8px;font-size:13px;font-family:var(--sans);outline:none;background:var(--white);">
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px;">
+        <p style="font-size:12px;font-weight:500;color:var(--ink-2);margin-bottom:8px;">Como obter sua API Key:</p>
+        <div style="font-size:12px;color:var(--ink-3);line-height:1.8;">
+          1. Acesse <strong>manage.wix.com</strong><br>
+          2. Vá em <strong>Settings → API Keys</strong><br>
+          3. Clique <strong>Generate API Key</strong><br>
+          4. Selecione permissões: Bookings, Contacts, Stores, Site<br>
+          5. Copie a chave gerada<br><br>
+          Para o <strong>Site ID</strong>: Settings → <strong>General Info</strong> → copie o Site ID
+        </div>
+      </div>
+
+      <p id="connect-error" style="display:none;color:var(--red);font-size:13px;margin-bottom:12px;text-align:center;"></p>
     </div>
 
-    <button class="btn-connect" onclick="connectWix()">
-      <svg width="18" height="18" viewBox="0 0 50 50" fill="white"><circle cx="25" cy="25" r="20" fill="white"/><text x="50%" y="56%" text-anchor="middle" font-size="20" fill="#1a3cff" font-weight="700">W</text></svg>
-      Continue with Wix
+    <button class="btn-connect" onclick="submitApiKey()">
+      Conectar meu site Wix
     </button>
 
-    <button class="btn-sm" style="width:100%;justify-content:center;" onclick="useDemoData()">
-      Use demo data (no Wix account needed)
+    <button class="btn-sm" style="width:100%;justify-content:center;margin-top:10px;" onclick="useDemoData()">
+      Usar dados demo (sem conta Wix)
     </button>
 
-    <p class="connect-note">We only read your data. Nothing is modified in Wix.<br>Read-only OAuth access.</p>
+    <p class="connect-note">Sua API Key é armazenada com segurança.<br>Acesso somente leitura — nunca modificamos seus dados.</p>
   </div>
 </div>
 
@@ -1321,24 +1337,40 @@ function logout() {
 }
 
 // ── Wix OAuth ──────────────────────────────────────────
-async function connectWix() {
-  const screen = document.getElementById('connect-screen')
-  screen.innerHTML = `
-    <div class="connect-box">
-      <div class="connect-logo">W</div>
-      <h2>Redirecionando para o Wix...</h2>
-      <p>Você será redirecionado para autorizar o acesso ao seu site Wix.</p>
-      <div style="margin:24px auto;width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-    </div>
-    <style>@keyframes spin{to{transform:rotate(360deg)}}</style>`
+async function submitApiKey() {
+  const apiKey = document.getElementById('wix-api-key').value.trim()
+  const siteId = document.getElementById('wix-site-id').value.trim()
+  const errEl  = document.getElementById('connect-error')
+  errEl.style.display = 'none'
 
-  const data = await api('/api/wix/connect')
-  if (data?.authUrl) {
-    window.location.href = data.authUrl
-  } else {
-    alert('Não foi possível iniciar a conexão com o Wix. Verifique as configurações.')
-    location.reload()
+  if (!apiKey || !siteId) {
+    errEl.textContent = 'Preencha a API Key e o Site ID.'
+    errEl.style.display = 'block'
+    return
   }
+
+  showLoading('Conectando ao Wix...')
+
+  const data = await api('/api/wix/connect', {
+    method: 'POST',
+    body: { apiKey, siteId }
+  })
+
+  hideLoading()
+
+  if (data?.ok) {
+    showApp()
+    await syncNow()
+    loadView('dashboard')
+  } else {
+    errEl.textContent = data?.error || 'Falha ao conectar. Verifique sua API Key e Site ID.'
+    errEl.style.display = 'block'
+  }
+}
+
+async function connectWix() {
+  // mantido por compatibilidade
+  document.getElementById('connect-screen').style.display = 'flex'
 }
 
 async function useDemoData() {
