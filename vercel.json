@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npx prisma generate",
+  "buildCommand": null,
   "rewrites": [
     {
       "source": "/api/auth/register",
