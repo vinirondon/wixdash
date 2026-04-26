@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "wixdash",
   "version": "1.0.0",
   "private": true,
@@ -6,7 +6,6 @@
     "dev": "node server.js",
     "start": "node server.js",
     "build": "npx prisma generate",
-    "postinstall": "npx prisma generate",
     "db:push": "npx prisma db push",
     "db:seed": "node prisma/seed.js"
   },
