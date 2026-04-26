@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vercel dev",
     "build": "prisma generate",
-    "postinstall": "prisma generate",
+    "postinstall": "npx prisma generate",
     "db:push": "prisma db push",
     "db:seed": "node prisma/seed.js",
     "db:studio": "prisma studio",
