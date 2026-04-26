@@ -1,0 +1,158 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+// ── Usuário do WixDash ────────────────────────────────
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String   @db.NVarChar(255)
+  name         String?  @db.NVarChar(255)
+  plan         String   @default("free") @db.NVarChar(20)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  wixConnections WixConnection[]
+}
+
+// ── Conexão OAuth com um site Wix ─────────────────────
+model WixConnection {
+  id           String   @id @default(cuid())
+  userId       String
+
+  accessToken  String   @db.NVarChar(Max)
+  refreshToken String   @db.NVarChar(Max)
+  expiresAt    DateTime
+
+  siteId       String   @db.NVarChar(255)
+  siteName     String?  @db.NVarChar(255)
+  siteUrl      String?  @db.NVarChar(500)
+
+  lastSyncAt   DateTime?
+  syncStatus   String    @default("idle") @db.NVarChar(20)
+  syncError    String?   @db.NVarChar(Max)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookings  Booking[]
+  clients   Client[]
+  services  Service[]
+  orders    Order[]
+  staffs    Staff[]
+
+  @@index([userId])
+}
+
+// ── Agendamentos ──────────────────────────────────────
+model Booking {
+  id           String    @id @default(cuid())
+  connectionId String
+  wixId        String    @db.NVarChar(255)
+  clientName   String?   @db.NVarChar(255)
+  clientEmail  String?   @db.NVarChar(255)
+  serviceName  String?   @db.NVarChar(255)
+  staffName    String?   @db.NVarChar(255)
+  startTime    DateTime?
+  endTime      DateTime?
+  status       String?   @db.NVarChar(50)
+  price        Float?
+  currency     String?   @default("USD") @db.NVarChar(10)
+  rawPayload   String?   @db.NVarChar(Max)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  connection WixConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  @@unique([connectionId, wixId])
+  @@index([connectionId])
+  @@index([startTime])
+}
+
+// ── Clientes ──────────────────────────────────────────
+model Client {
+  id           String   @id @default(cuid())
+  connectionId String
+  wixId        String   @db.NVarChar(255)
+  name         String?  @db.NVarChar(255)
+  email        String?  @db.NVarChar(255)
+  phone        String?  @db.NVarChar(50)
+  rawPayload   String?  @db.NVarChar(Max)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  connection WixConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  @@unique([connectionId, wixId])
+  @@index([connectionId])
+}
+
+// ── Serviços ──────────────────────────────────────────
+model Service {
+  id           String   @id @default(cuid())
+  connectionId String
+  wixId        String   @db.NVarChar(255)
+  name         String?  @db.NVarChar(255)
+  category     String?  @db.NVarChar(255)
+  durationMins Int?
+  price        Float?
+  currency     String?  @default("USD") @db.NVarChar(10)
+  status       String?  @db.NVarChar(50)
+  rawPayload   String?  @db.NVarChar(Max)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  connection WixConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  @@unique([connectionId, wixId])
+  @@index([connectionId])
+}
+
+// ── Pedidos ───────────────────────────────────────────
+model Order {
+  id            String    @id @default(cuid())
+  connectionId  String
+  wixId         String    @db.NVarChar(255)
+  clientName    String?   @db.NVarChar(255)
+  clientEmail   String?   @db.NVarChar(255)
+  total         Float?
+  currency      String?   @default("USD") @db.NVarChar(10)
+  status        String?   @db.NVarChar(50)
+  paymentStatus String?   @db.NVarChar(50)
+  createdDate   DateTime?
+  rawPayload    String?   @db.NVarChar(Max)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  connection WixConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  @@unique([connectionId, wixId])
+  @@index([connectionId])
+  @@index([createdDate])
+}
+
+// ── Staff ─────────────────────────────────────────────
+model Staff {
+  id           String   @id @default(cuid())
+  connectionId String
+  wixId        String   @db.NVarChar(255)
+  name         String?  @db.NVarChar(255)
+  email        String?  @db.NVarChar(255)
+  role         String?  @db.NVarChar(100)
+  commission   Float?   @default(30)
+  rawPayload   String?  @db.NVarChar(Max)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  connection WixConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  @@unique([connectionId, wixId])
+  @@index([connectionId])
+}

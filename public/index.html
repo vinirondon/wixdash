@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WixDash — Your Wix Business, Unified</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0d0d0d;
+    --ink-2: #3a3a3a;
+    --ink-3: #6b6b6b;
+    --surface: #fafaf8;
+    --surface-2: #f2f1ec;
+    --surface-3: #e8e6de;
+    --accent: #1a3cff;
+    --accent-light: #e8edff;
+    --accent-mid: #3d5aff;
+    --green: #0a7c4f;
+    --green-bg: #e6f5ee;
+    --amber: #92540a;
+    --amber-bg: #fdf3e3;
+    --border: rgba(13,13,13,0.1);
+    --border-strong: rgba(13,13,13,0.18);
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+    --radius: 12px;
+    --radius-lg: 20px;
+    --transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--surface);
+    color: var(--ink);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(250,250,248,0.88);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 18px;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .nav-logo-mark {
+    width: 32px;
+    height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    font-style: italic;
+    font-family: var(--serif);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--ink-2);
+    font-size: 14px;
+    font-weight: 400;
+    transition: color var(--transition);
+  }
+
+  .nav-links a:hover { color: var(--ink); }
+
+  .nav-cta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .btn-ghost {
+    padding: 8px 18px;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background var(--transition), border-color var(--transition);
+    font-family: var(--sans);
+  }
+
+  .btn-ghost:hover { background: var(--surface-2); }
+
+  .btn-primary {
+    padding: 8px 20px;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background var(--transition), transform var(--transition);
+    font-family: var(--sans);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-primary:hover { background: var(--accent-mid); transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 148px 2rem 100px;
+    max-width: 1120px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 100px;
+    margin-bottom: 24px;
+  }
+
+  .hero-eyebrow-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(42px, 5vw, 62px);
+    font-weight: 400;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-desc {
+    font-size: 17px;
+    color: var(--ink-3);
+    line-height: 1.7;
+    margin-bottom: 40px;
+    max-width: 460px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .btn-hero {
+    padding: 14px 28px;
+    background: var(--accent);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--sans);
+    transition: background var(--transition), transform var(--transition);
+  }
+
+  .btn-hero:hover { background: var(--accent-mid); transform: translateY(-2px); }
+
+  .btn-hero-outline {
+    padding: 14px 28px;
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 400;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: var(--sans);
+    transition: background var(--transition);
+  }
+
+  .btn-hero-outline:hover { background: var(--surface-2); }
+
+  .hero-social-proof {
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .avatars {
+    display: flex;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--surface);
+    margin-left: -8px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+
+  .avatar:first-child { margin-left: 0; }
+
+  .social-text {
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+
+  .stars {
+    color: #f59e0b;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  /* ── HERO VISUAL ── */
+  .hero-visual {
+    position: relative;
+  }
+
+  .dashboard-preview {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 32px 80px rgba(13,13,13,0.12), 0 8px 24px rgba(13,13,13,0.06);
+    transform: perspective(1200px) rotateY(-4deg) rotateX(2deg);
+    transition: transform 0.4s ease;
+  }
+
+  .dashboard-preview:hover {
+    transform: perspective(1200px) rotateY(-2deg) rotateX(1deg);
+  }
+
+  .dp-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .dp-dots { display: flex; gap: 5px; }
+  .dp-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dp-dot.red { background: #ff5f57; }
+  .dp-dot.yellow { background: #ffbd2e; }
+  .dp-dot.green { background: #28c840; }
+
+  .dp-bar {
+    flex: 1;
+    height: 22px;
+    background: var(--surface-2);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 10px;
+    color: var(--ink-3);
+    gap: 4px;
+  }
+
+  .dp-body {
+    display: flex;
+    height: 340px;
+  }
+
+  .dp-sidebar {
+    width: 52px;
+    background: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 0;
+    gap: 14px;
+  }
+
+  .dp-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .dp-icon.active { background: var(--accent); color: white; }
+  .dp-icon.dim { opacity: 0.35; color: white; }
+
+  .dp-content {
+    flex: 1;
+    padding: 16px;
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .dp-kpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .dp-kpi {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 10px 8px;
+  }
+
+  .dp-kpi-label {
+    font-size: 9px;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 3px;
+  }
+
+  .dp-kpi-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+    font-family: var(--serif);
+  }
+
+  .dp-kpi-delta {
+    font-size: 9px;
+    color: var(--green);
+    margin-top: 2px;
+  }
+
+  .dp-section-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--ink-3);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .dp-list { display: flex; flex-direction: column; gap: 5px; }
+
+  .dp-list-row {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .dp-avatar-sm {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 8px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .dp-row-info { flex: 1; min-width: 0; }
+  .dp-row-name { font-size: 10px; font-weight: 500; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dp-row-sub { font-size: 9px; color: var(--ink-3); }
+  .dp-badge { font-size: 8px; padding: 2px 6px; border-radius: 100px; font-weight: 500; flex-shrink: 0; }
+  .dp-badge.green { background: var(--green-bg); color: var(--green); }
+  .dp-badge.amber { background: var(--amber-bg); color: var(--amber); }
+  .dp-badge.blue { background: var(--accent-light); color: var(--accent); }
+
+  .floating-card {
+    position: absolute;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    font-size: 12px;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .fc-1 {
+    bottom: -20px;
+    left: -30px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation-delay: 0s;
+  }
+
+  .fc-2 {
+    top: 40px;
+    right: -28px;
+    animation-delay: 1.5s;
+  }
+
+  .fc-icon { font-size: 22px; }
+  .fc-label { font-size: 11px; color: var(--ink-3); }
+  .fc-val { font-size: 15px; font-weight: 600; color: var(--ink); }
+  .fc-change { font-size: 11px; color: var(--green); }
+
+  /* ── LOGOS ── */
+  .logos-bar {
+    background: var(--surface-2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 2rem;
+    text-align: center;
+  }
+
+  .logos-label {
+    font-size: 12px;
+    color: var(--ink-3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .logos-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+
+  .logo-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink-3);
+    padding: 6px 16px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    background: white;
+  }
+
+  /* ── HOW IT WORKS ── */
+  section { padding: 100px 2rem; max-width: 1120px; margin: 0 auto; }
+
+  .section-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    color: var(--ink);
+  }
+
+  .section-title em { font-style: italic; }
+
+  .section-sub {
+    font-size: 17px;
+    color: var(--ink-3);
+    line-height: 1.7;
+    max-width: 520px;
+  }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .step-card {
+    padding: 32px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: white;
+    position: relative;
+    transition: box-shadow var(--transition), transform var(--transition);
+  }
+
+  .step-card:hover {
+    box-shadow: 0 16px 40px rgba(13,13,13,0.08);
+    transform: translateY(-4px);
+  }
+
+  .step-num {
+    font-family: var(--serif);
+    font-size: 48px;
+    font-style: italic;
+    color: var(--surface-3);
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    line-height: 1;
+  }
+
+  .step-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--accent-light);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    font-size: 20px;
+  }
+
+  .step-card h3 {
+    font-size: 17px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: var(--ink);
+  }
+
+  .step-card p {
+    font-size: 14px;
+    color: var(--ink-3);
+    line-height: 1.65;
+  }
+
+  /* ── FEATURES ── */
+  .features-section {
+    background: var(--surface-2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 100px 2rem;
+  }
+
+  .features-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px 80px;
+    margin-top: 60px;
+  }
+
+  .feature-item {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .feature-icon {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .feature-body h4 {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+
+  .feature-body p {
+    font-size: 14px;
+    color: var(--ink-3);
+    line-height: 1.6;
+  }
+
+  /* ── PRICING ── */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 60px;
+  }
+
+  .pricing-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: white;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow var(--transition), transform var(--transition);
+    position: relative;
+  }
+
+  .pricing-card:hover {
+    box-shadow: 0 20px 48px rgba(13,13,13,0.1);
+    transform: translateY(-4px);
+  }
+
+  .pricing-card.featured {
+    border-color: var(--accent);
+    border-width: 2px;
+  }
+
+  .popular-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 3px 14px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  .plan-tier {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 12px;
+  }
+
+  .plan-price {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+
+  .plan-price-value {
+    font-family: var(--serif);
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  .plan-price-period {
+    font-size: 14px;
+    color: var(--ink-3);
+  }
+
+  .plan-price-prefix {
+    font-size: 20px;
+    color: var(--ink-2);
+    font-family: var(--serif);
+  }
+
+  .plan-desc {
+    font-size: 13px;
+    color: var(--ink-3);
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+
+  .plan-features {
+    list-style: none;
+    margin-bottom: 32px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .plan-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+
+  .plan-check {
+    width: 16px;
+    height: 16px;
+    background: var(--green-bg);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    font-size: 9px;
+    color: var(--green);
+  }
+
+  .plan-cross {
+    width: 16px;
+    height: 16px;
+    background: var(--surface-2);
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    font-size: 9px;
+    color: var(--ink-3);
+  }
+
+  .btn-plan {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: var(--sans);
+    transition: all var(--transition);
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--ink);
+  }
+
+  .btn-plan:hover { background: var(--surface-2); }
+
+  .btn-plan.primary {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  .btn-plan.primary:hover { background: var(--accent-mid); }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 60px;
+  }
+
+  .testimonial-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    transition: box-shadow var(--transition);
+  }
+
+  .testimonial-card:hover { box-shadow: 0 8px 28px rgba(13,13,13,0.07); }
+
+  .testimonial-stars { color: #f59e0b; font-size: 14px; margin-bottom: 14px; }
+
+  .testimonial-text {
+    font-size: 14px;
+    color: var(--ink-2);
+    line-height: 1.7;
+    margin-bottom: 20px;
+    font-style: italic;
+    font-family: var(--serif);
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .t-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+
+  .t-name { font-size: 13px; font-weight: 500; color: var(--ink); }
+  .t-role { font-size: 12px; color: var(--ink-3); }
+
+  /* ── CTA ── */
+  .cta-section {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 40px 2rem 100px;
+  }
+
+  .cta-box {
+    background: var(--ink);
+    border-radius: 24px;
+    padding: 80px 80px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 60px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-bg {
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 300px;
+    height: 300px;
+    background: var(--accent);
+    border-radius: 50%;
+    opacity: 0.12;
+    pointer-events: none;
+  }
+
+  .cta-title {
+    font-family: var(--serif);
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 400;
+    color: white;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .cta-title em { font-style: italic; color: #a8b8ff; }
+
+  .cta-sub {
+    font-size: 16px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+  }
+
+  .cta-actions { display: flex; flex-direction: column; gap: 12px; align-items: center; flex-shrink: 0; }
+
+  .btn-cta {
+    padding: 14px 32px;
+    background: white;
+    border: none;
+    border-radius: 10px;
+    color: var(--accent);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: var(--sans);
+    white-space: nowrap;
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+
+  .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+
+  .cta-note { font-size: 12px; color: rgba(255,255,255,0.4); text-align: center; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--surface-2);
+    border-top: 1px solid var(--border);
+    padding: 60px 2rem 40px;
+  }
+
+  .footer-inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 40px;
+  }
+
+  .footer-brand p {
+    font-size: 14px;
+    color: var(--ink-3);
+    line-height: 1.7;
+    margin-top: 12px;
+    max-width: 240px;
+  }
+
+  .footer-col h5 {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 14px;
+  }
+
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+  .footer-col a {
+    font-size: 14px;
+    color: var(--ink-2);
+    text-decoration: none;
+    transition: color var(--transition);
+  }
+
+  .footer-col a:hover { color: var(--ink); }
+
+  .footer-bottom {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+
+  /* ── ANIMATIONS ── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; gap: 48px; padding-top: 120px; }
+    .steps-grid, .features-grid, .testimonials-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .cta-box { grid-template-columns: 1fr; padding: 48px 32px; }
+    .footer-inner { grid-template-columns: 1fr 1fr; }
+    nav .nav-links { display: none; }
+    .dashboard-preview { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <span class="nav-logo-mark">W</span>
+    WixDash
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="dashboard.html" class="btn-ghost">Sign in</a>
+    <a href="#pricing" class="btn-primary">
+      Start free
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div style="max-width:1120px;margin:0 auto;padding:0 2rem;">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <span class="hero-eyebrow-dot"></span>
+        Now live — connect in 60 seconds
+      </div>
+      <h1>Your Wix site, <em>finally</em> under control</h1>
+      <p class="hero-desc">WixDash connects to your Wix account and gives you a beautiful management dashboard — bookings, clients, services, staff, and payroll. All in one place.</p>
+      <div class="hero-actions">
+        <a href="dashboard.html" class="btn-hero">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+          Connect your Wix site
+        </a>
+        <a href="#how-it-works" class="btn-hero-outline">See how it works</a>
+      </div>
+      <div class="hero-social-proof">
+        <div class="avatars">
+          <div class="avatar" style="background:#1a3cff;">SL</div>
+          <div class="avatar" style="background:#0a7c4f;">MR</div>
+          <div class="avatar" style="background:#92540a;">JC</div>
+          <div class="avatar" style="background:#7c3a99;">AP</div>
+        </div>
+        <div>
+          <div class="stars">★★★★★</div>
+          <div class="social-text">Loved by 400+ Wix business owners</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <!-- Floating cards -->
+      <div class="floating-card fc-2">
+        <div class="fc-label">Today's revenue</div>
+        <div class="fc-val">$2,840</div>
+        <div class="fc-change">↑ 18% vs yesterday</div>
+      </div>
+      <div class="floating-card fc-1">
+        <div class="fc-icon">📅</div>
+        <div>
+          <div class="fc-label">Next booking</div>
+          <div class="fc-val">2:30 PM</div>
+        </div>
+      </div>
+
+      <!-- Dashboard preview -->
+      <div class="dashboard-preview">
+        <div class="dp-header">
+          <div class="dp-dots">
+            <div class="dp-dot red"></div>
+            <div class="dp-dot yellow"></div>
+            <div class="dp-dot green"></div>
+          </div>
+          <div class="dp-bar">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20"/><path d="M2 12h20"/></svg>
+            app.wixdash.com/dashboard
+          </div>
+        </div>
+        <div class="dp-body">
+          <div class="dp-sidebar">
+            <div class="dp-icon active">⊞</div>
+            <div class="dp-icon dim">📅</div>
+            <div class="dp-icon dim">👥</div>
+            <div class="dp-icon dim">✂</div>
+            <div class="dp-icon dim">💳</div>
+            <div class="dp-icon dim">👤</div>
+          </div>
+          <div class="dp-content">
+            <div class="dp-kpis">
+              <div class="dp-kpi">
+                <div class="dp-kpi-label">Revenue</div>
+                <div class="dp-kpi-value">$14.2k</div>
+                <div class="dp-kpi-delta">↑ 12% this month</div>
+              </div>
+              <div class="dp-kpi">
+                <div class="dp-kpi-label">Bookings</div>
+                <div class="dp-kpi-value">248</div>
+                <div class="dp-kpi-delta">↑ 8 today</div>
+              </div>
+              <div class="dp-kpi">
+                <div class="dp-kpi-label">Clients</div>
+                <div class="dp-kpi-value">1,042</div>
+                <div class="dp-kpi-delta">+28 new</div>
+              </div>
+            </div>
+            <div class="dp-section-label">Today's bookings</div>
+            <div class="dp-list">
+              <div class="dp-list-row">
+                <div class="dp-avatar-sm" style="background:#1a3cff;">SL</div>
+                <div class="dp-row-info">
+                  <div class="dp-row-name">Sarah Lewis</div>
+                  <div class="dp-row-sub">10:00 AM · Facial</div>
+                </div>
+                <span class="dp-badge green">Confirmed</span>
+              </div>
+              <div class="dp-list-row">
+                <div class="dp-avatar-sm" style="background:#0a7c4f;">MJ</div>
+                <div class="dp-row-info">
+                  <div class="dp-row-name">Mike Johnson</div>
+                  <div class="dp-row-sub">11:30 AM · Massage</div>
+                </div>
+                <span class="dp-badge amber">Pending</span>
+              </div>
+              <div class="dp-list-row">
+                <div class="dp-avatar-sm" style="background:#92540a;">AP</div>
+                <div class="dp-row-info">
+                  <div class="dp-row-name">Anna Park</div>
+                  <div class="dp-row-sub">2:30 PM · Haircut</div>
+                </div>
+                <span class="dp-badge blue">Upcoming</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGOS -->
+<div class="logos-bar">
+  <p class="logos-label">Works with everything you use</p>
+  <div class="logos-row">
+    <div class="logo-pill">🌐 Wix Bookings</div>
+    <div class="logo-pill">📦 Wix Stores</div>
+    <div class="logo-pill">👥 Wix CRM</div>
+    <div class="logo-pill">📊 Wix Analytics</div>
+    <div class="logo-pill">👩‍💼 Wix Staff</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <p class="section-label fade-up">How it works</p>
+  <h2 class="section-title fade-up">From connection to <em>clarity</em><br>in three steps</h2>
+  <p class="section-sub fade-up">No code, no CSV exports, no manual data entry. WixDash reads directly from your Wix account via the official API.</p>
+
+  <div class="steps-grid">
+    <div class="step-card fade-up">
+      <span class="step-num">1</span>
+      <div class="step-icon">🔗</div>
+      <h3>Connect your Wix account</h3>
+      <p>Click "Connect Wix", log in with your Wix credentials, and authorize read access. Takes under 60 seconds. Your data stays in Wix — we only read it.</p>
+    </div>
+    <div class="step-card fade-up" style="transition-delay:0.1s;">
+      <span class="step-num">2</span>
+      <div class="step-icon">⚡</div>
+      <h3>Your data syncs instantly</h3>
+      <p>WixDash pulls your bookings, clients, services, orders, and staff in real time. Everything is organized in a clean, fast dashboard you'll actually enjoy using.</p>
+    </div>
+    <div class="step-card fade-up" style="transition-delay:0.2s;">
+      <span class="step-num">3</span>
+      <div class="step-icon">💼</div>
+      <h3>Manage &amp; run payroll</h3>
+      <p>See who did what, calculate staff earnings by service, export reports, and track performance — all based on real data from your Wix bookings.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<div class="features-section">
+  <div class="features-inner">
+    <p class="section-label fade-up">Everything you need</p>
+    <h2 class="section-title fade-up">Built for <em>service businesses</em><br>that run on Wix</h2>
+
+    <div class="features-grid">
+      <div class="feature-item fade-up">
+        <div class="feature-icon">📅</div>
+        <div class="feature-body">
+          <h4>Bookings dashboard</h4>
+          <p>See all appointments in a clean calendar or list view. Filter by date, service, or staff member. Never lose track of a booking again.</p>
+        </div>
+      </div>
+      <div class="feature-item fade-up">
+        <div class="feature-icon">👥</div>
+        <div class="feature-body">
+          <h4>Client management</h4>
+          <p>Full client profiles with booking history, total spend, and contact info — all pulled directly from Wix Contacts.</p>
+        </div>
+      </div>
+      <div class="feature-item fade-up">
+        <div class="feature-icon">✂</div>
+        <div class="feature-body">
+          <h4>Services catalog</h4>
+          <p>View and manage all your Wix services, prices, durations, and availability in one organized table.</p>
+        </div>
+      </div>
+      <div class="feature-item fade-up">
+        <div class="feature-icon">👩‍💼</div>
+        <div class="feature-body">
+          <h4>Staff performance</h4>
+          <p>Track how many services each staff member completed, their total revenue contribution, and peak hours.</p>
+        </div>
+      </div>
+      <div class="feature-item fade-up">
+        <div class="feature-icon">💰</div>
+        <div class="feature-body">
+          <h4>Payroll calculator</h4>
+          <p>Set commission rates per service type and let WixDash automatically calculate each staff member's earnings for the period.</p>
+        </div>
+      </div>
+      <div class="feature-item fade-up">
+        <div class="feature-icon">📊</div>
+        <div class="feature-body">
+          <h4>Revenue reports</h4>
+          <p>Daily, weekly, and monthly revenue breakdowns. Export to CSV for your accountant or tax prep with one click.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<section id="pricing">
+  <p class="section-label fade-up">Pricing</p>
+  <h2 class="section-title fade-up">Simple, <em>transparent</em> pricing</h2>
+  <p class="section-sub fade-up">Start free and upgrade when you're ready. No hidden fees, no contracts.</p>
+
+  <div class="pricing-grid">
+    <!-- FREE -->
+    <div class="pricing-card fade-up">
+      <div class="plan-tier">Free</div>
+      <div class="plan-price">
+        <span class="plan-price-prefix">$</span>
+        <span class="plan-price-value">0</span>
+        <span class="plan-price-period">/month</span>
+      </div>
+      <p class="plan-desc">Perfect for trying WixDash with your Wix site.</p>
+      <ul class="plan-features">
+        <li><span class="plan-check">✓</span> 1 Wix site connected</li>
+        <li><span class="plan-check">✓</span> Bookings dashboard (last 30 days)</li>
+        <li><span class="plan-check">✓</span> Client list (up to 100)</li>
+        <li><span class="plan-check">✓</span> Services catalog</li>
+        <li><span class="plan-cross">✗</span> Staff performance</li>
+        <li><span class="plan-cross">✗</span> Payroll calculator</li>
+        <li><span class="plan-cross">✗</span> CSV exports</li>
+      </ul>
+      <a href="dashboard.html" class="btn-plan">Get started free</a>
+    </div>
+
+    <!-- PRO -->
+    <div class="pricing-card featured fade-up" style="transition-delay:0.1s;">
+      <div class="popular-badge">Most popular</div>
+      <div class="plan-tier">Pro</div>
+      <div class="plan-price">
+        <span class="plan-price-prefix">$</span>
+        <span class="plan-price-value">29</span>
+        <span class="plan-price-period">/month</span>
+      </div>
+      <p class="plan-desc">Everything you need to run your business day-to-day.</p>
+      <ul class="plan-features">
+        <li><span class="plan-check">✓</span> 1 Wix site connected</li>
+        <li><span class="plan-check">✓</span> Full bookings history</li>
+        <li><span class="plan-check">✓</span> Unlimited clients</li>
+        <li><span class="plan-check">✓</span> Services catalog + orders</li>
+        <li><span class="plan-check">✓</span> Staff performance reports</li>
+        <li><span class="plan-check">✓</span> Payroll calculator</li>
+        <li><span class="plan-check">✓</span> CSV exports</li>
+      </ul>
+      <a href="dashboard.html" class="btn-plan primary">Start 14-day free trial</a>
+    </div>
+
+    <!-- BUSINESS -->
+    <div class="pricing-card fade-up" style="transition-delay:0.2s;">
+      <div class="plan-tier">Business</div>
+      <div class="plan-price">
+        <span class="plan-price-prefix">$</span>
+        <span class="plan-price-value">79</span>
+        <span class="plan-price-period">/month</span>
+      </div>
+      <p class="plan-desc">For agencies and multi-location businesses.</p>
+      <ul class="plan-features">
+        <li><span class="plan-check">✓</span> Up to 5 Wix sites</li>
+        <li><span class="plan-check">✓</span> Everything in Pro</li>
+        <li><span class="plan-check">✓</span> Multi-location reports</li>
+        <li><span class="plan-check">✓</span> Team access (3 seats)</li>
+        <li><span class="plan-check">✓</span> Priority support</li>
+        <li><span class="plan-check">✓</span> Custom branding</li>
+        <li><span class="plan-check">✓</span> API access</li>
+      </ul>
+      <a href="dashboard.html" class="btn-plan">Start 14-day free trial</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials" style="padding-top:0;">
+  <p class="section-label fade-up">Testimonials</p>
+  <h2 class="section-title fade-up">What business owners <em>say</em></h2>
+
+  <div class="testimonials-grid">
+    <div class="testimonial-card fade-up">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"I used to export everything from Wix to spreadsheets manually every week. WixDash killed that workflow completely. Now payroll takes me 10 minutes."</p>
+      <div class="testimonial-author">
+        <div class="t-avatar" style="background:#1a3cff;">SL</div>
+        <div>
+          <div class="t-name">Sarah Lewis</div>
+          <div class="t-role">Owner, Glow Aesthetics — Miami</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card fade-up" style="transition-delay:0.1s;">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"The staff performance view is exactly what I needed. I can see immediately which services each person is doing and calculate their commission without Excel."</p>
+      <div class="testimonial-author">
+        <div class="t-avatar" style="background:#0a7c4f;">MR</div>
+        <div>
+          <div class="t-name">Marcus Reid</div>
+          <div class="t-role">Manager, The Barber Studio — NYC</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card fade-up" style="transition-delay:0.2s;">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"Simple, fast, and actually works with Wix. I tried 3 other tools before this. None of them had the payroll feature. WixDash is the only one that does."</p>
+      <div class="testimonial-author">
+        <div class="t-avatar" style="background:#92540a;">JC</div>
+        <div>
+          <div class="t-name">Julia Chen</div>
+          <div class="t-role">Owner, Lotus Spa — Los Angeles</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-box">
+    <div class="cta-bg"></div>
+    <div>
+      <h2 class="cta-title">Ready to take control<br>of your <em>Wix business?</em></h2>
+      <p class="cta-sub">Connect your Wix site in under a minute. No credit card required for the free plan.</p>
+    </div>
+    <div class="cta-actions">
+      <a href="dashboard.html" class="btn-cta">Connect Wix — it's free</a>
+      <span class="cta-note">14-day free trial on Pro &amp; Business</span>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo" style="text-decoration:none;">
+        <span class="nav-logo-mark">W</span>
+        WixDash
+      </a>
+      <p>The management dashboard built exclusively for Wix businesses. Connect, visualize, and grow.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Product</h5>
+      <ul>
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">Changelog</a></li>
+        <li><a href="#">Roadmap</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Legal</h5>
+      <ul>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Security</a></li>
+        <li><a href="#">GDPR</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 WixDash. All rights reserved.</span>
+    <span>Not affiliated with Wix.com Ltd.</span>
+  </div>
+</footer>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

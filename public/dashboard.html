@@ -1,0 +1,1754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WixDash — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: #0d0d0d;
+  --ink-2: #3a3a3a;
+  --ink-3: #6b6b6b;
+  --ink-4: #9b9b9b;
+  --surface: #fafaf8;
+  --surface-2: #f2f1ec;
+  --surface-3: #e8e6de;
+  --white: #ffffff;
+  --accent: #1a3cff;
+  --accent-light: #e8edff;
+  --accent-mid: #3d5aff;
+  --green: #0a7c4f;
+  --green-bg: #e6f5ee;
+  --green-text: #065f3c;
+  --amber: #92540a;
+  --amber-bg: #fdf3e3;
+  --red: #b91c1c;
+  --red-bg: #fef2f2;
+  --border: rgba(13,13,13,0.09);
+  --border-strong: rgba(13,13,13,0.16);
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'DM Sans', system-ui, sans-serif;
+  --sidebar-w: 220px;
+  --header-h: 60px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --tr: 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--surface-2);
+  color: var(--ink);
+  display: flex;
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  z-index: 50;
+}
+
+.sidebar-logo {
+  padding: 20px 20px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  margin-bottom: 8px;
+}
+
+.logo-mark {
+  width: 30px;
+  height: 30px;
+  background: var(--accent);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: white;
+  font-weight: 400;
+  flex-shrink: 0;
+}
+
+.logo-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+}
+
+.sidebar-section {
+  padding: 0 10px;
+  margin-bottom: 4px;
+}
+
+.sidebar-section-label {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.28);
+  padding: 14px 10px 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.55);
+  font-size: 13.5px;
+  font-weight: 400;
+  transition: background var(--tr), color var(--tr);
+  user-select: none;
+}
+
+.nav-item:hover {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.85);
+}
+
+.nav-item.active {
+  background: rgba(26,60,255,0.2);
+  color: #a8b8ff;
+  font-weight: 500;
+}
+
+.nav-item.active .nav-icon { opacity: 1; }
+
+.nav-icon {
+  width: 18px;
+  text-align: center;
+  font-size: 15px;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--accent);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 100px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 12px 10px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.wix-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(10,124,79,0.15);
+  border: 1px solid rgba(10,124,79,0.25);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.wix-dot {
+  width: 7px;
+  height: 7px;
+  background: #34d399;
+  border-radius: 50%;
+  animation: blink 2s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.wix-status-text {
+  font-size: 12px;
+  color: #6ee7b7;
+  font-weight: 500;
+  flex: 1;
+}
+
+.wix-status-sub { font-size: 10px; color: rgba(110,231,183,0.6); margin-top: 1px; }
+
+/* ── MAIN ── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  height: var(--header-h);
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.page-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.topbar-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar-sync {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--ink-3);
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  cursor: pointer;
+  background: var(--surface);
+  transition: background var(--tr);
+}
+
+.topbar-sync:hover { background: var(--surface-2); }
+
+.sync-dot {
+  width: 6px;
+  height: 6px;
+  background: #34d399;
+  border-radius: 50%;
+}
+
+.topbar-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── PAGE CONTENT ── */
+.page-content {
+  flex: 1;
+  padding: 28px;
+}
+
+.view { display: none; }
+.view.active { display: block; }
+
+/* ── DASHBOARD ── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+}
+
+.kpi-label {
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kpi-icon { font-size: 14px; }
+
+.kpi-value {
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.kpi-delta {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.delta-up { color: var(--green); }
+.delta-down { color: var(--red); }
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.card-title { font-size: 13px; font-weight: 500; color: var(--ink); }
+.card-action { font-size: 12px; color: var(--accent); cursor: pointer; }
+
+/* ── TABLE ── */
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-3);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+td {
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface); }
+
+.avatar-sm {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.name-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.badge-green { background: var(--green-bg); color: var(--green-text); }
+.badge-amber { background: var(--amber-bg); color: var(--amber); }
+.badge-blue { background: var(--accent-light); color: var(--accent); }
+.badge-red { background: var(--red-bg); color: var(--red); }
+.badge-gray { background: var(--surface-2); color: var(--ink-3); }
+
+/* ── PAGE HEADERS ── */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.page-h1 {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.page-sub { font-size: 13px; color: var(--ink-3); }
+
+.btn-sm {
+  padding: 7px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--sans);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: background var(--tr);
+}
+
+.btn-sm:hover { background: var(--surface-2); }
+
+.btn-sm.primary {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.btn-sm.primary:hover { background: var(--accent-mid); }
+
+/* ── FILTERS ── */
+.filters-bar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-input {
+  padding: 7px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
+  font-size: 13px;
+  font-family: var(--sans);
+  background: var(--white);
+  color: var(--ink);
+  width: 220px;
+  outline: none;
+}
+
+.filter-input:focus { border-color: var(--accent); }
+
+select.filter-select {
+  padding: 7px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
+  font-size: 13px;
+  font-family: var(--sans);
+  background: var(--white);
+  color: var(--ink);
+  cursor: pointer;
+  outline: none;
+}
+
+/* ── MINI CHART ── */
+.mini-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 48px;
+  margin-top: 8px;
+}
+
+.bar {
+  flex: 1;
+  background: var(--accent-light);
+  border-radius: 3px 3px 0 0;
+  position: relative;
+  cursor: default;
+  transition: background var(--tr);
+}
+
+.bar:hover { background: var(--accent); }
+.bar.today { background: var(--accent); }
+
+/* ── PAYROLL ── */
+.payroll-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.payroll-kpi {
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+
+.payroll-kpi-label { font-size: 11px; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.payroll-kpi-value { font-family: var(--serif); font-size: 22px; color: var(--ink); }
+
+.staff-row-payroll {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.staff-row-payroll:last-child { border-bottom: none; }
+
+.commission-input {
+  width: 72px;
+  padding: 5px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: var(--sans);
+  text-align: right;
+  outline: none;
+  background: var(--white);
+}
+
+.commission-input:focus { border-color: var(--accent); }
+
+.staff-earnings {
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--ink);
+  min-width: 80px;
+  text-align: right;
+}
+
+/* ── EMPTY STATE ── */
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--ink-3);
+}
+
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+.empty-title { font-size: 15px; font-weight: 500; color: var(--ink-2); margin-bottom: 6px; }
+.empty-sub { font-size: 13px; color: var(--ink-3); line-height: 1.6; }
+
+/* ── CONNECT SCREEN ── */
+.connect-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+}
+
+.connect-box {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 56px 64px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+}
+
+.connect-logo {
+  width: 56px;
+  height: 56px;
+  background: var(--accent);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 24px;
+  color: white;
+  margin: 0 auto 24px;
+}
+
+.connect-box h2 {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.connect-box p {
+  font-size: 14px;
+  color: var(--ink-3);
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+
+.btn-connect {
+  width: 100%;
+  padding: 14px;
+  background: var(--ink);
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--sans);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: opacity var(--tr), transform var(--tr);
+  margin-bottom: 12px;
+}
+
+.btn-connect:hover { opacity: 0.85; transform: translateY(-1px); }
+
+.connect-note {
+  font-size: 12px;
+  color: var(--ink-4);
+  margin-top: 16px;
+}
+
+.connect-perms {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin: 24px 0;
+  text-align: left;
+}
+
+.perm-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink-2);
+  padding: 4px 0;
+}
+
+.perm-check { color: var(--green); font-size: 12px; }
+
+/* ── MONTH TABS ── */
+.period-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--surface-2);
+  padding: 3px;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.period-tab {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--ink-3);
+  transition: background var(--tr), color var(--tr);
+  border: none;
+  background: none;
+  font-family: var(--sans);
+}
+
+.period-tab.active {
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* ── SPARKLINE ── */
+canvas.sparkline { display: block; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .main { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- CONNECT SCREEN (shown first if not connected) -->
+
+<!-- LOADING OVERLAY -->
+<div id="loading-overlay" style="display:none;position:fixed;inset:0;z-index:300;background:rgba(250,250,248,0.85);backdrop-filter:blur(8px);align-items:center;justify-content:center;flex-direction:column;gap:12px;">
+  <div style="width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+  <p id="loading-msg" style="font-size:14px;color:var(--ink-3);">Carregando...</p>
+  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+</div>
+
+<!-- AUTH SCREEN (login / register) -->
+<div id="auth-screen" style="display:none;position:fixed;inset:0;z-index:250;background:var(--surface);align-items:center;justify-content:center;">
+  <div class="connect-box" style="max-width:420px;">
+    <div class="connect-logo">W</div>
+    <h2 id="auth-title">Entrar no WixDash</h2>
+    <p>Gerencie seu site Wix em um só lugar.</p>
+
+    <div id="auth-tabs" style="display:flex;gap:4px;background:var(--surface-2);padding:3px;border-radius:8px;margin-bottom:20px;">
+      <button class="period-tab active" onclick="switchAuthTab('login',this)" style="flex:1;">Entrar</button>
+      <button class="period-tab" onclick="switchAuthTab('register',this)" style="flex:1;">Criar conta</button>
+    </div>
+
+    <div id="register-name-wrap" style="display:none;margin-bottom:10px;">
+      <input id="auth-name" type="text" placeholder="Seu nome" style="width:100%;padding:10px 12px;border:1px solid var(--border-strong);border-radius:8px;font-size:14px;font-family:var(--sans);outline:none;background:var(--white);">
+    </div>
+    <div style="margin-bottom:10px;">
+      <input id="auth-email" type="email" placeholder="seu@email.com" value="demo@wixdash.com" style="width:100%;padding:10px 12px;border:1px solid var(--border-strong);border-radius:8px;font-size:14px;font-family:var(--sans);outline:none;background:var(--white);">
+    </div>
+    <div style="margin-bottom:16px;">
+      <input id="auth-password" type="password" placeholder="Senha" value="demo1234" style="width:100%;padding:10px 12px;border:1px solid var(--border-strong);border-radius:8px;font-size:14px;font-family:var(--sans);outline:none;background:var(--white);">
+    </div>
+
+    <p id="auth-error" style="display:none;color:var(--red);font-size:13px;margin-bottom:12px;text-align:center;"></p>
+
+    <button class="btn-connect" id="auth-submit-btn" onclick="submitAuth()">Entrar</button>
+
+    <div style="margin-top:16px;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;">
+      <p style="font-size:12px;color:var(--ink-3);text-align:center;margin-bottom:6px;">Conta de demonstração</p>
+      <button class="btn-sm" style="width:100%;justify-content:center;" onclick="fillDemo()">Preencher dados demo</button>
+    </div>
+  </div>
+</div>
+
+<div id="connect-screen" class="connect-screen" style="position:fixed;inset:0;z-index:200;display:none;">
+  <div class="connect-box">
+    <div class="connect-logo">W</div>
+    <h2>Connect your Wix site</h2>
+    <p>Authorize WixDash to read your bookings, clients, services, orders, and staff — all read-only, never modified.</p>
+
+    <div class="connect-perms">
+      <div class="perm-item"><span class="perm-check">✓</span> Read bookings & appointments</div>
+      <div class="perm-item"><span class="perm-check">✓</span> Read contacts & clients</div>
+      <div class="perm-item"><span class="perm-check">✓</span> Read services catalog</div>
+      <div class="perm-item"><span class="perm-check">✓</span> Read orders & payments</div>
+      <div class="perm-item"><span class="perm-check">✓</span> Read staff members</div>
+    </div>
+
+    <button class="btn-connect" onclick="connectWix()">
+      <svg width="18" height="18" viewBox="0 0 50 50" fill="white"><circle cx="25" cy="25" r="20" fill="white"/><text x="50%" y="56%" text-anchor="middle" font-size="20" fill="#1a3cff" font-weight="700">W</text></svg>
+      Continue with Wix
+    </button>
+
+    <button class="btn-sm" style="width:100%;justify-content:center;" onclick="useDemoData()">
+      Use demo data (no Wix account needed)
+    </button>
+
+    <p class="connect-note">We only read your data. Nothing is modified in Wix.<br>Read-only OAuth access.</p>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">W</div>
+    <span class="logo-name">WixDash</span>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Overview</div>
+    <div class="nav-item active" onclick="navigate('dashboard', this)">
+      <span class="nav-icon">⊞</span> Dashboard
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Wix Data</div>
+    <div class="nav-item" onclick="navigate('bookings', this)">
+      <span class="nav-icon">📅</span> Bookings
+      <span class="nav-badge" id="badge-bookings">8</span>
+    </div>
+    <div class="nav-item" onclick="navigate('clients', this)">
+      <span class="nav-icon">👥</span> Clients
+    </div>
+    <div class="nav-item" onclick="navigate('services', this)">
+      <span class="nav-icon">✂</span> Services
+    </div>
+    <div class="nav-item" onclick="navigate('orders', this)">
+      <span class="nav-icon">💳</span> Orders
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Management</div>
+    <div class="nav-item" onclick="navigate('staff', this)">
+      <span class="nav-icon">👩‍💼</span> Staff
+    </div>
+    <div class="nav-item" onclick="navigate('payroll', this)">
+      <span class="nav-icon">💰</span> Payroll
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Account</div>
+    <div class="nav-item" onclick="navigate('settings', this)">
+      <span class="nav-icon">⚙</span> Settings
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="wix-status" onclick="showSyncModal()">
+      <div class="wix-dot"></div>
+      <div>
+        <div class="wix-status-text">Wix connected</div>
+        <div class="wix-status-sub">Synced 2 min ago</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <span class="page-title" id="page-title">Dashboard</span>
+    <div class="topbar-actions">
+      <div class="topbar-sync" onclick="syncNow()">
+        <div class="sync-dot" id="sync-dot"></div>
+        <span id="sync-label">Synced just now</span>
+      </div>
+      <div class="topbar-avatar">JD</div>
+    </div>
+  </div>
+
+  <!-- PAGE CONTENT -->
+  <div class="page-content">
+
+    <!-- ── DASHBOARD ── -->
+    <div class="view active" id="view-dashboard">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Revenue this month <span class="kpi-icon">💰</span></div>
+          <div class="kpi-value">$14,280</div>
+          <div class="kpi-delta delta-up">↑ 12% vs last month</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Bookings today <span class="kpi-icon">📅</span></div>
+          <div class="kpi-value">18</div>
+          <div class="kpi-delta delta-up">↑ 3 more than yesterday</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Active clients <span class="kpi-icon">👥</span></div>
+          <div class="kpi-value">1,042</div>
+          <div class="kpi-delta delta-up">↑ 28 new this month</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Pending orders <span class="kpi-icon">📦</span></div>
+          <div class="kpi-value">7</div>
+          <div class="kpi-delta delta-down">↓ 2 require action</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <!-- Today's bookings -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Today's bookings</span>
+            <span class="card-action" onclick="navigate('bookings', null)">View all →</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Client</th><th>Service</th><th>Time</th><th>Staff</th><th>Status</th></tr></thead>
+              <tbody id="recent-bookings-body">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Revenue this week (bar chart) -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Revenue — last 7 days</span>
+            <span class="card-action">$6,320 this week</span>
+          </div>
+          <div style="padding: 8px 0;">
+            <div class="mini-chart" id="revenue-chart"></div>
+            <div style="display:flex;justify-content:space-between;margin-top:6px;">
+              <span style="font-size:10px;color:var(--ink-4);">Mon</span>
+              <span style="font-size:10px;color:var(--ink-4);">Tue</span>
+              <span style="font-size:10px;color:var(--ink-4);">Wed</span>
+              <span style="font-size:10px;color:var(--ink-4);">Thu</span>
+              <span style="font-size:10px;color:var(--ink-4);">Fri</span>
+              <span style="font-size:10px;color:var(--ink-4);">Sat</span>
+              <span style="font-size:10px;color:var(--ink-4);">Today</span>
+            </div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:12px;">
+            <div style="flex:1;text-align:center;padding:10px;background:var(--surface-2);border-radius:8px;">
+              <div style="font-size:10px;color:var(--ink-3);margin-bottom:4px;">AVG/DAY</div>
+              <div style="font-family:var(--serif);font-size:18px;">$903</div>
+            </div>
+            <div style="flex:1;text-align:center;padding:10px;background:var(--surface-2);border-radius:8px;">
+              <div style="font-size:10px;color:var(--ink-3);margin-bottom:4px;">BEST DAY</div>
+              <div style="font-family:var(--serif);font-size:18px;">Sat</div>
+            </div>
+            <div style="flex:1;text-align:center;padding:10px;background:var(--surface-2);border-radius:8px;">
+              <div style="font-size:10px;color:var(--ink-3);margin-bottom:4px;">SERVICES</div>
+              <div style="font-family:var(--serif);font-size:18px;">74</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top services -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Top services this month</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div id="top-services-list"></div>
+          </div>
+        </div>
+
+        <!-- Top staff -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Staff performance</span>
+            <span class="card-action" onclick="navigate('staff', null)">Details →</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Staff</th><th>Bookings</th><th>Revenue</th><th>Rating</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><div class="name-cell"><div class="avatar-sm" style="background:#1a3cff;">EJ</div>Emma Johnson</div></td>
+                  <td>68</td><td>$4,820</td><td>⭐ 4.9</td>
+                </tr>
+                <tr>
+                  <td><div class="name-cell"><div class="avatar-sm" style="background:#0a7c4f;">CR</div>Carlos Reyes</div></td>
+                  <td>54</td><td>$3,780</td><td>⭐ 4.8</td>
+                </tr>
+                <tr>
+                  <td><div class="name-cell"><div class="avatar-sm" style="background:#92540a;">MS</div>Maya Santos</div></td>
+                  <td>49</td><td>$3,430</td><td>⭐ 4.7</td>
+                </tr>
+                <tr>
+                  <td><div class="name-cell"><div class="avatar-sm" style="background:#7c3a99;">SL</div>Sofia Lima</div></td>
+                  <td>41</td><td>$2,870</td><td>⭐ 4.9</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── BOOKINGS ── -->
+    <div class="view" id="view-bookings">
+      <div class="page-header">
+        <div>
+          <h1 class="page-h1">Bookings</h1>
+          <p class="page-sub">All appointments from Wix Bookings</p>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <span id="bookings-count" style="font-size:12px;color:var(--ink-3);"></span><button class="btn-sm" onclick="exportCSV('bookings')">↓ Export CSV</button>
+        </div>
+      </div>
+
+      <div class="filters-bar">
+        <input type="text" class="filter-input" placeholder="Search client or service..." oninput="filterSearch(this.value,'bookings')">
+        <select class="filter-select" onchange="filterStatus(this.value,'bookings')">
+          <option value="">All statuses</option>
+          <option>Confirmed</option>
+          <option>Pending</option>
+          <option>Completed</option>
+          <option>Cancelled</option>
+        </select>
+        <select class="filter-select">
+          <option>All staff</option>
+          <option>Emma Johnson</option>
+          <option>Carlos Reyes</option>
+          <option>Maya Santos</option>
+          <option>Sofia Lima</option>
+        </select>
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table id="bookings-table">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Service</th>
+                <th>Date &amp; Time</th>
+                <th>Staff</th>
+                <th>Duration</th>
+                <th>Price</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="bookings-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CLIENTS ── -->
+    <div class="view" id="view-clients">
+      <div class="page-header">
+        <div>
+          <h1 class="page-h1">Clients</h1>
+          <p class="page-sub">Synced from Wix Contacts</p>
+        </div>
+        <button class="btn-sm" onclick="exportCSV('clients')">↓ Export CSV</button>
+      </div>
+
+      <div class="filters-bar">
+        <input type="text" class="filter-input" placeholder="Search by name or email..." oninput="filterSearch(this.value,'clients')">
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Name</th><th>Email</th><th>Phone</th><th>Total bookings</th><th>Total spent</th><th>Last visit</th></tr>
+            </thead>
+            <tbody id="clients-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SERVICES ── -->
+    <div class="view" id="view-services">
+      <div class="page-header">
+        <div>
+          <h1 class="page-h1">Services</h1>
+          <p class="page-sub">Catalog from Wix Bookings</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Service</th><th>Category</th><th>Duration</th><th>Price</th><th>Bookings this month</th><th>Revenue</th><th>Status</th></tr>
+            </thead>
+            <tbody id="services-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ORDERS ── -->
+    <div class="view" id="view-orders">
+      <div class="page-header">
+        <div>
+          <h1 class="page-h1">Orders</h1>
+          <p class="page-sub">Payments from Wix Stores &amp; Bookings</p>
+        </div>
+        <button class="btn-sm" onclick="exportCSV('orders')">↓ Export CSV</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Order ID</th><th>Client</th><th>Items</th><th>Total</th><th>Date</th><th>Payment</th><th>Status</th></tr>
+            </thead>
+            <tbody id="orders-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STAFF ── -->
+    <div class="view" id="view-staff">
+      <div class="page-header">
+        <div>
+          <h1 class="page-h1">Staff</h1>
+          <p class="page-sub">Members synced from Wix</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Name</th><th>Role</th><th>Services</th><th>Bookings this month</th><th>Revenue generated</th><th>Avg rating</th><th>Status</th></tr>
+            </thead>
+            <tbody id="staff-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PAYROLL ── -->
+    <div class="view" id="view-payroll">
+      <div class="page-header">
+        <div>
+          <h1 class="page-h1">Payroll</h1>
+          <p class="page-sub">Commission-based earnings from Wix bookings</p>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div class="period-tabs">
+            <button class="period-tab active" onclick="setPeriod('may', this)">May 2025</button>
+            <button class="period-tab" onclick="setPeriod('apr', this)">Apr 2025</button>
+            <button class="period-tab" onclick="setPeriod('mar', this)">Mar 2025</button>
+          </div>
+          <button class="btn-sm primary" onclick="exportPayroll()">↓ Export payroll</button>
+        </div>
+      </div>
+
+      <div class="payroll-summary">
+        <div class="payroll-kpi">
+          <div class="payroll-kpi-label">Total payroll</div>
+          <div class="payroll-kpi-value" id="payroll-total">$4,218</div>
+        </div>
+        <div class="payroll-kpi">
+          <div class="payroll-kpi-label">Total services</div>
+          <div class="payroll-kpi-value">212</div>
+        </div>
+        <div class="payroll-kpi">
+          <div class="payroll-kpi-label">Revenue covered</div>
+          <div class="payroll-kpi-value">$14,280</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Staff earnings — set commission % per person</span>
+          <span style="font-size:12px;color:var(--ink-3);">Earnings = services revenue × commission rate</span>
+        </div>
+        <div id="payroll-staff-list"></div>
+      </div>
+    </div>
+
+    <!-- ── SETTINGS ── -->
+    <div class="view" id="view-settings">
+      <div class="page-header">
+        <div>
+          <h1 class="page-h1">Settings</h1>
+          <p class="page-sub">Account and Wix connection</p>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Wix connection</span></div>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);">
+            <div style="width:40px;height:40px;background:#e8edff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:16px;">W</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:500;">Wix site connected</div>
+              <div style="font-size:12px;color:var(--ink-3);">my-beauty-salon.wixsite.com</div>
+            </div>
+            <span class="badge badge-green">Active</span>
+          </div>
+          <div style="margin-top:14px;display:flex;gap:8px;">
+            <button class="btn-sm" onclick="syncNow()">↺ Sync now</button>
+            <button class="btn-sm" style="color:var(--red);border-color:var(--red);" onclick="if(confirm('Disconnect Wix?'))alert('Disconnected')">Disconnect</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">Sync settings</span></div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <div style="font-size:13px;font-weight:500;">Auto-sync frequency</div>
+                <div style="font-size:12px;color:var(--ink-3);">How often to pull from Wix</div>
+              </div>
+              <select class="filter-select">
+                <option>Every 5 min</option>
+                <option>Every 15 min</option>
+                <option>Every hour</option>
+              </select>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <div style="font-size:13px;font-weight:500;">Data retention</div>
+                <div style="font-size:12px;color:var(--ink-3);">How far back to sync</div>
+              </div>
+              <select class="filter-select">
+                <option>Last 90 days</option>
+                <option>Last 6 months</option>
+                <option>All history</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">Your plan</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <div>
+              <div style="font-size:18px;font-family:var(--serif);">Pro Plan</div>
+              <div style="font-size:12px;color:var(--ink-3);">$29/month · renews June 12</div>
+            </div>
+            <span class="badge badge-blue">Active</span>
+          </div>
+          <button class="btn-sm primary">Upgrade to Business</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">Account</span></div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <div class="topbar-avatar" style="width:44px;height:44px;font-size:14px;">JD</div>
+            <div>
+              <div style="font-size:13px;font-weight:500;">Jane Doe</div>
+              <div style="font-size:12px;color:var(--ink-3);">jane@mybusiness.com</div>
+            </div>
+          </div>
+          <button class="btn-sm">Edit profile</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page-content -->
+</div><!-- /main -->
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  WixDash — script principal (conectado à API real)
+// ═══════════════════════════════════════════════════════
+
+const API = ''  // mesmo domínio; em dev: 'http://localhost:3000'
+const COLORS = ['#1a3cff','#0a7c4f','#92540a','#7c3a99','#b91c1c','#0e7490','#854d0e']
+
+// ── Estado global ──────────────────────────────────────
+let TOKEN = localStorage.getItem('wd_token') || ''
+let CURRENT_VIEW = 'dashboard'
+
+// ── Helpers de fetch ───────────────────────────────────
+async function api(path, opts = {}) {
+  const res = await fetch(API + path, {
+    ...opts,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${TOKEN}`,
+      ...(opts.headers || {}),
+    },
+    body: opts.body ? JSON.stringify(opts.body) : undefined,
+  })
+  if (res.status === 401) { logout(); return null }
+  return res.json()
+}
+
+// ── Auth ───────────────────────────────────────────────
+async function doLogin(email, password) {
+  showLoading('Entrando...')
+  const data = await fetch(API + '/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  }).then(r => r.json())
+
+  if (data.token) {
+    TOKEN = data.token
+    localStorage.setItem('wd_token', TOKEN)
+    localStorage.setItem('wd_user', JSON.stringify(data.user))
+    hideLoading()
+    if (data.wixConnection) {
+      showApp()
+      loadView('dashboard')
+    } else {
+      showApp()
+      showConnectScreen()
+    }
+  } else {
+    hideLoading()
+    showAuthError(data.error || 'Login falhou')
+  }
+}
+
+async function doRegister(name, email, password) {
+  showLoading('Criando conta...')
+  const data = await fetch(API + '/api/auth/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, password }),
+  }).then(r => r.json())
+
+  if (data.token) {
+    TOKEN = data.token
+    localStorage.setItem('wd_token', TOKEN)
+    localStorage.setItem('wd_user', JSON.stringify(data.user))
+    hideLoading()
+    showApp()
+    showConnectScreen()
+  } else {
+    hideLoading()
+    showAuthError(data.error || 'Cadastro falhou')
+  }
+}
+
+function logout() {
+  localStorage.removeItem('wd_token')
+  localStorage.removeItem('wd_user')
+  TOKEN = ''
+  location.reload()
+}
+
+// ── Wix OAuth ──────────────────────────────────────────
+async function connectWix() {
+  const screen = document.getElementById('connect-screen')
+  screen.innerHTML = `
+    <div class="connect-box">
+      <div class="connect-logo">W</div>
+      <h2>Redirecionando para o Wix...</h2>
+      <p>Você será redirecionado para autorizar o acesso ao seu site Wix.</p>
+      <div style="margin:24px auto;width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+    </div>
+    <style>@keyframes spin{to{transform:rotate(360deg)}}</style>`
+
+  const data = await api('/api/wix/connect')
+  if (data?.authUrl) {
+    window.location.href = data.authUrl
+  } else {
+    alert('Não foi possível iniciar a conexão com o Wix. Verifique as configurações.')
+    location.reload()
+  }
+}
+
+async function useDemoData() {
+  // Login automático com a conta demo (criada pelo seed)
+  await doLogin('demo@wixdash.com', 'demo1234')
+}
+
+async function disconnectWix() {
+  if (!confirm('Desconectar o Wix? Todos os dados sincronizados serão removidos.')) return
+  await api('/api/wix/disconnect', { method: 'DELETE' })
+  location.reload()
+}
+
+// ── Sync ───────────────────────────────────────────────
+async function syncNow() {
+  const dot   = document.getElementById('sync-dot')
+  const label = document.getElementById('sync-label')
+  dot.style.background = '#f59e0b'
+  label.textContent = 'Sincronizando...'
+
+  const data = await api('/api/sync/run', { method: 'POST', body: {} })
+
+  if (data?.ok) {
+    dot.style.background = '#34d399'
+    label.textContent = 'Sincronizado agora'
+    const r = data.results
+    console.log(`Sync: ${r.bookings} bookings, ${r.clients} clientes, ${r.services} serviços, ${r.orders} pedidos, ${r.staff} staff`)
+    if (CURRENT_VIEW) loadView(CURRENT_VIEW)
+  } else {
+    dot.style.background = '#ef4444'
+    label.textContent = 'Erro no sync'
+    alert(data?.error || 'Sync falhou. Verifique a conexão com o Wix.')
+  }
+}
+
+// ── Carregar dados da API ──────────────────────────────
+async function loadView(view) {
+  CURRENT_VIEW = view
+  showViewSkeleton(view)
+
+  const data = await api(`/api/wix/data?section=${view}`)
+  if (!data) return
+
+  if (data.connected === false) {
+    showConnectScreen()
+    return
+  }
+
+  // Atualiza status de sync no sidebar
+  if (data.connection?.lastSyncAt) {
+    const ago = timeAgo(new Date(data.connection.lastSyncAt))
+    document.getElementById('sync-label').textContent = `Sync ${ago}`
+  }
+
+  switch (view) {
+    case 'dashboard': renderDashboard(data);  break
+    case 'bookings':  renderBookings(data);   break
+    case 'clients':   renderClients(data);    break
+    case 'services':  renderServices(data);   break
+    case 'orders':    renderOrders(data);     break
+    case 'staff':     renderStaff(data);      break
+    case 'payroll':   renderPayroll(data);    break
+  }
+}
+
+// ── Renderers ──────────────────────────────────────────
+function color(i) { return COLORS[i % COLORS.length] }
+function initials(name) {
+  if (!name) return '?'
+  return name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase()
+}
+function fmt(val, type = 'text') {
+  if (val === null || val === undefined) return '<span style="color:var(--ink-4)">—</span>'
+  if (type === 'money') return '$' + Number(val).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  if (type === 'date')  return new Date(val).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+  return val
+}
+function statusBadge(s) {
+  const map = {
+    CONFIRMED: 'badge-green', Confirmed: 'badge-green', FULFILLED: 'badge-green', PAID: 'badge-green', ACTIVE: 'badge-green',
+    PENDING: 'badge-amber', NOT_FULFILLED: 'badge-amber', pending: 'badge-amber',
+    CANCELED: 'badge-red', CANCELLED: 'badge-red', REFUNDED: 'badge-red',
+    PAUSED: 'badge-gray', idle: 'badge-gray',
+  }
+  const cls = map[s] || 'badge-gray'
+  const label = s?.replace(/_/g, ' ') || '—'
+  return `<span class="badge ${cls}">${label}</span>`
+}
+function timeAgo(date) {
+  const secs = Math.floor((new Date() - date) / 1000)
+  if (secs < 60)   return 'agora'
+  if (secs < 3600) return `${Math.floor(secs/60)}min atrás`
+  if (secs < 86400) return `${Math.floor(secs/3600)}h atrás`
+  return `${Math.floor(secs/86400)}d atrás`
+}
+
+function renderDashboard(data) {
+  const k = data.kpis || {}
+
+  // KPIs
+  document.querySelector('#view-dashboard .kpi-grid').innerHTML = `
+    <div class="kpi-card">
+      <div class="kpi-label">Revenue total <span class="kpi-icon">💰</span></div>
+      <div class="kpi-value">${fmt(k.totalRevenue, 'money')}</div>
+      <div class="kpi-delta delta-up">Wix Bookings + Orders</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Bookings hoje <span class="kpi-icon">📅</span></div>
+      <div class="kpi-value">${k.todayBookings ?? 0}</div>
+      <div class="kpi-delta delta-up">Total: ${k.bookings ?? 0}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Clientes ativos <span class="kpi-icon">👥</span></div>
+      <div class="kpi-value">${(k.clients ?? 0).toLocaleString()}</div>
+      <div class="kpi-delta delta-up">Wix Contacts</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Site Wix <span class="kpi-icon">🌐</span></div>
+      <div class="kpi-value" style="font-size:16px;padding-top:4px;">${data.connection?.siteName || '—'}</div>
+      <div class="kpi-delta" style="color:var(--green);">Conectado</div>
+    </div>`
+
+  // Bookings recentes
+  const rb = data.recentBookings || []
+  document.getElementById('recent-bookings-body').innerHTML = rb.length
+    ? rb.map((b, i) => `
+      <tr>
+        <td><div class="name-cell"><div class="avatar-sm" style="background:${color(i)}">${initials(b.clientName)}</div>${b.clientName || '—'}</div></td>
+        <td>${b.serviceName || '—'}</td>
+        <td>${b.startTime ? fmt(b.startTime, 'date') : '—'}</td>
+        <td>${b.staffName || '—'}</td>
+        <td>${statusBadge(b.status)}</td>
+      </tr>`).join('')
+    : `<tr><td colspan="5" style="text-align:center;color:var(--ink-3);padding:24px;">Nenhum booking ainda. <a href="#" onclick="syncNow()" style="color:var(--accent)">Sincronize agora</a></td></tr>`
+
+  // Top serviços
+  const ts = data.topServices || []
+  const maxCount = ts[0]?._count?.serviceName || 1
+  document.getElementById('top-services-list').innerHTML = ts.length
+    ? ts.map((s, i) => `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="font-size:12px;color:var(--ink-3);width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${s.serviceName || '—'}</div>
+        <div style="flex:1;height:8px;background:var(--surface-2);border-radius:4px;overflow:hidden;">
+          <div style="height:100%;background:${color(i)};border-radius:4px;width:${Math.round(s._count.serviceName/maxCount*100)}%;"></div>
+        </div>
+        <div style="font-size:12px;font-weight:500;width:28px;text-align:right;">${s._count.serviceName}</div>
+      </div>`).join('')
+    : '<p style="font-size:13px;color:var(--ink-3);">Sem dados. Sincronize primeiro.</p>'
+}
+
+function renderBookings(data) {
+  const items = data.items || []
+  document.getElementById('bookings-body').innerHTML = items.length
+    ? items.map((b, i) => `
+      <tr>
+        <td><div class="name-cell"><div class="avatar-sm" style="background:${color(i)}">${initials(b.clientName)}</div>${b.clientName || '—'}</div></td>
+        <td>${b.serviceName || '—'}</td>
+        <td>${b.startTime ? fmt(b.startTime, 'date') : '—'}</td>
+        <td>${b.staffName || '—'}</td>
+        <td>${b.endTime && b.startTime ? Math.round((new Date(b.endTime)-new Date(b.startTime))/60000)+'min' : '—'}</td>
+        <td>${b.price ? fmt(b.price, 'money') : '—'}</td>
+        <td>${statusBadge(b.status)}</td>
+      </tr>`).join('')
+    : emptyRow(7, 'Nenhum booking. Clique em "Sync" para importar do Wix.')
+  document.getElementById('bookings-count').textContent = `${data.total ?? 0} registros`
+}
+
+function renderClients(data) {
+  const items = data.items || []
+  document.getElementById('clients-body').innerHTML = items.length
+    ? items.map((c, i) => `
+      <tr>
+        <td><div class="name-cell"><div class="avatar-sm" style="background:${color(i)}">${initials(c.name)}</div>${c.name || '—'}</div></td>
+        <td style="color:var(--ink-3);">${c.email || '—'}</td>
+        <td style="color:var(--ink-3);">${c.phone || '—'}</td>
+        <td>${fmt(c.createdAt, 'date')}</td>
+      </tr>`).join('')
+    : emptyRow(4, 'Nenhum cliente. Sincronize com o Wix.')
+}
+
+function renderServices(data) {
+  const items = data.items || []
+  document.getElementById('services-body').innerHTML = items.length
+    ? items.map((s, i) => `
+      <tr>
+        <td style="font-weight:500;">${s.name || '—'}</td>
+        <td><span class="badge badge-blue">${s.category || '—'}</span></td>
+        <td>${s.durationMins ? s.durationMins+'min' : '—'}</td>
+        <td>${s.price ? fmt(s.price, 'money') : '—'}</td>
+        <td>${statusBadge(s.status)}</td>
+      </tr>`).join('')
+    : emptyRow(5, 'Nenhum serviço. Sincronize com o Wix.')
+}
+
+function renderOrders(data) {
+  const items = data.items || []
+  document.getElementById('orders-body').innerHTML = items.length
+    ? items.map((o, i) => `
+      <tr>
+        <td style="font-family:monospace;font-size:11px;">${o.wixId?.substring(0,12) || '—'}</td>
+        <td><div class="name-cell"><div class="avatar-sm" style="background:${color(i)}">${initials(o.clientName)}</div>${o.clientName || '—'}</div></td>
+        <td>${o.total ? fmt(o.total, 'money') : '—'}</td>
+        <td>${o.createdDate ? fmt(o.createdDate, 'date') : '—'}</td>
+        <td>${statusBadge(o.paymentStatus)}</td>
+        <td>${statusBadge(o.status)}</td>
+      </tr>`).join('')
+    : emptyRow(6, 'Nenhum pedido. Sincronize com o Wix.')
+}
+
+function renderStaff(data) {
+  const items = data.items || []
+  document.getElementById('staff-body').innerHTML = items.length
+    ? items.map((s, i) => `
+      <tr>
+        <td><div class="name-cell"><div class="avatar-sm" style="background:${color(i)}">${initials(s.name)}</div>${s.name || '—'}</div></td>
+        <td>${s.role || '—'}</td>
+        <td>${s.bookingCount ?? 0}</td>
+        <td>${s.revenue ? fmt(s.revenue, 'money') : '—'}</td>
+        <td>${s.commission ?? 30}%</td>
+        <td>${statusBadge('ACTIVE')}</td>
+      </tr>`).join('')
+    : emptyRow(6, 'Nenhum staff. Sincronize com o Wix.')
+}
+
+function renderPayroll(data) {
+  const items = data.items || []
+  document.getElementById('payroll-total').textContent = fmt(data.totalPayroll || 0, 'money')
+
+  document.getElementById('payroll-staff-list').innerHTML = items.length
+    ? items.map((s, i) => `
+      <div class="staff-row-payroll">
+        <div class="avatar-sm" style="background:${color(i)}">${initials(s.name)}</div>
+        <div>
+          <div style="font-size:13px;font-weight:500;">${s.name || '—'}</div>
+          <div style="font-size:12px;color:var(--ink-3);">${s.bookingCount ?? 0} bookings · ${fmt(s.revenue, 'money')} receita</div>
+        </div>
+        <div style="font-size:12px;color:var(--ink-3);">Comissão %</div>
+        <input type="number" class="commission-input" value="${s.commission ?? 30}" min="0" max="100"
+          onchange="saveCommission('${s.id}', this.value, '${s.revenue ?? 0}', 'earn-${s.id}')">
+        <div class="staff-earnings" id="earn-${s.id}">${fmt(s.earnings ?? 0, 'money')}</div>
+      </div>`).join('')
+    : '<p style="color:var(--ink-3);padding:20px;text-align:center;">Nenhum staff cadastrado.</p>'
+}
+
+async function saveCommission(staffId, commission, revenue, earnId) {
+  const pct  = parseFloat(commission) || 0
+  const earn = (parseFloat(revenue) * pct / 100)
+  document.getElementById(earnId).textContent = fmt(earn, 'money')
+
+  await api('/api/staff/commission', {
+    method: 'PUT',
+    body: { staffId, commission: pct },
+  })
+
+  // Recalcula total
+  const inputs = document.querySelectorAll('.commission-input')
+  let total = 0
+  inputs.forEach(inp => {
+    const row = inp.closest('.staff-row-payroll')
+    const rev = parseFloat(row.querySelector('.staff-earnings').dataset.revenue || 0)
+    total += rev * (parseFloat(inp.value) || 0) / 100
+  })
+  // recarrega para ter total atualizado do servidor
+  loadView('payroll')
+}
+
+function emptyRow(cols, msg) {
+  return `<tr><td colspan="${cols}" style="text-align:center;color:var(--ink-3);padding:32px;">${msg}</td></tr>`
+}
+
+// ── Filtros com debounce ───────────────────────────────
+let searchTimer = null
+function filterSearch(value, view) {
+  clearTimeout(searchTimer)
+  searchTimer = setTimeout(async () => {
+    const data = await api(`/api/wix/data?section=${view}&search=${encodeURIComponent(value)}`)
+    if (data) {
+      switch(view) {
+        case 'bookings': renderBookings(data); break
+        case 'clients':  renderClients(data);  break
+        case 'orders':   renderOrders(data);   break
+      }
+    }
+  }, 350)
+}
+
+async function filterStatus(value, view) {
+  const data = await api(`/api/wix/data?section=${view}&status=${encodeURIComponent(value)}`)
+  if (data) {
+    if (view === 'bookings') renderBookings(data)
+    if (view === 'orders')   renderOrders(data)
+  }
+}
+
+// ── Navegação ─────────────────────────────────────────
+function navigate(view, el) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'))
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
+  const target = document.getElementById('view-' + view)
+  if (target) target.classList.add('active')
+  if (el) el.classList.add('active')
+
+  const titles = { dashboard:'Dashboard', bookings:'Bookings', clients:'Clients', services:'Services', orders:'Orders', staff:'Staff', payroll:'Payroll', settings:'Settings' }
+  document.getElementById('page-title').textContent = titles[view] || view
+
+  if (view !== 'settings') loadView(view)
+}
+
+// ── UI helpers ────────────────────────────────────────
+function showViewSkeleton(view) {
+  // Mantém a estrutura, só indica loading no título da view
+  const title = document.getElementById('page-title')
+  if (title) title.textContent = title.textContent
+}
+
+function showApp() {
+  document.getElementById('connect-screen').style.display = 'none'
+  document.getElementById('auth-screen').style.display = 'none'
+}
+
+function showConnectScreen() {
+  document.getElementById('connect-screen').style.display = 'flex'
+}
+
+function showLoading(msg) {
+  document.getElementById('loading-overlay').style.display = 'flex'
+  document.getElementById('loading-msg').textContent = msg || 'Carregando...'
+}
+
+function hideLoading() {
+  document.getElementById('loading-overlay').style.display = 'none'
+}
+
+function showAuthError(msg) {
+  const el = document.getElementById('auth-error')
+  el.textContent = msg
+  el.style.display = 'block'
+}
+
+function setPeriod(p, el) {
+  document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'))
+  el.classList.add('active')
+}
+
+function exportCSV(type) {
+  alert(`Export ${type} — Em produção, isso baixa um CSV real dos dados sincronizados.`)
+}
+
+function exportPayroll() {
+  alert('Export payroll — Em produção, gera PDF/CSV com comissões calculadas.')
+}
+
+
+// ── Auth UI helpers ───────────────────────────────────
+let authMode = 'login'
+
+function switchAuthTab(mode, el) {
+  authMode = mode
+  document.querySelectorAll('#auth-tabs .period-tab').forEach(t => t.classList.remove('active'))
+  el.classList.add('active')
+  document.getElementById('auth-title').textContent = mode === 'login' ? 'Entrar no WixDash' : 'Criar sua conta'
+  document.getElementById('auth-submit-btn').textContent = mode === 'login' ? 'Entrar' : 'Criar conta'
+  document.getElementById('register-name-wrap').style.display = mode === 'register' ? 'block' : 'none'
+  document.getElementById('auth-error').style.display = 'none'
+}
+
+function fillDemo() {
+  document.getElementById('auth-email').value = 'demo@wixdash.com'
+  document.getElementById('auth-password').value = 'demo1234'
+}
+
+function submitAuth() {
+  const email    = document.getElementById('auth-email').value.trim()
+  const password = document.getElementById('auth-password').value
+  const name     = document.getElementById('auth-name').value.trim()
+  document.getElementById('auth-error').style.display = 'none'
+  if (authMode === 'login') doLogin(email, password)
+  else doRegister(name, email, password)
+}
+
+// Permite submit com Enter
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('auth-screen').style.display !== 'none') {
+    submitAuth()
+  }
+})
+
+// Também adiciona o bookings-count span se não existir
+
+// ── Init ──────────────────────────────────────────────
+// Verifica se veio do callback do Wix
+const urlParams = new URLSearchParams(window.location.search)
+if (urlParams.get('wix_connected')) {
+  history.replaceState({}, '', '/dashboard.html')
+  showApp()
+  syncNow().then(() => loadView('dashboard'))
+} else if (urlParams.get('wix_error')) {
+  alert('Erro ao conectar com o Wix: ' + urlParams.get('wix_error'))
+  history.replaceState({}, '', '/dashboard.html')
+}
+
+// Se já tem token, entra direto
+if (TOKEN) {
+  showApp()
+  loadView('dashboard')
+} else {
+  // Mostra tela de login
+  document.getElementById('auth-screen').style.display = 'flex'
+}
+</script>
+
+</body>
+</html>
