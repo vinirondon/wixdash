@@ -1,201 +1,98 @@
-// api/wix/data.js
-// Retorna todos os dados sincronizados para o dashboard
-const { prisma } = require('../../lib/prisma')
+require('dotenv').config()
 const { requireAuth, setCors } = require('../../middleware/auth')
+const { getDb } = require('../../lib/db')
 
 module.exports = async function handler(req, res) {
   setCors(res)
   if (req.method === 'OPTIONS') return res.status(200).end()
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' })
 
-  const user = await requireAuth(req, res)
-  if (!user) return
+  try {
+    const user = await requireAuth(req, res)
+    if (!user) return
 
-  const connection = await prisma.wixConnection.findFirst({
-    where: { userId: user.id },
-    orderBy: { createdAt: 'desc' },
-  })
+    const sql = getDb()
+    const connRows = await sql`SELECT * FROM "WixConnection" WHERE "userId" = ${user.id} ORDER BY "createdAt" DESC LIMIT 1`
+    const connection = connRows[0]
 
-  if (!connection) {
-    return res.status(200).json({ connected: false })
-  }
+    if (!connection) return res.status(200).json({ connected: false })
 
-  const { section = 'dashboard', page = '1', limit = '50', search = '', status = '' } = req.query
-  const skip = (parseInt(page) - 1) * parseInt(limit)
-  const take = parseInt(limit)
+    const { section = 'dashboard', search = '', status = '' } = req.query
+    const cid = connection.id
 
-  switch (section) {
-
-    case 'dashboard': {
-      const [bookingCount, clientCount, orderAgg, todayBookings, recentBookings, topServices] =
-        await Promise.all([
-          prisma.booking.count({ where: { connectionId: connection.id } }),
-          prisma.client.count({ where: { connectionId: connection.id } }),
-          prisma.order.aggregate({
-            where: { connectionId: connection.id },
-            _sum: { total: true },
-          }),
-          prisma.booking.count({
-            where: {
-              connectionId: connection.id,
-              startTime: {
-                gte: new Date(new Date().setHours(0, 0, 0, 0)),
-                lt:  new Date(new Date().setHours(23, 59, 59, 999)),
-              },
-            },
-          }),
-          prisma.booking.findMany({
-            where: { connectionId: connection.id },
-            orderBy: { startTime: 'desc' },
-            take: 10,
-          }),
-          // Top 5 serviços por bookings
-          prisma.booking.groupBy({
-            by: ['serviceName'],
-            where: { connectionId: connection.id, serviceName: { not: null } },
-            _count: { serviceName: true },
-            _sum: { price: true },
-            orderBy: { _count: { serviceName: 'desc' } },
-            take: 5,
-          }),
-        ])
+    if (section === 'dashboard') {
+      const [bookingCount, clientCount, todayCount, recentBookings, topServices, revenue] = await Promise.all([
+        sql`SELECT COUNT(*) as count FROM "Booking" WHERE "connectionId" = ${cid}`,
+        sql`SELECT COUNT(*) as count FROM "Client" WHERE "connectionId" = ${cid}`,
+        sql`SELECT COUNT(*) as count FROM "Booking" WHERE "connectionId" = ${cid} AND "startTime"::date = CURRENT_DATE`,
+        sql`SELECT * FROM "Booking" WHERE "connectionId" = ${cid} ORDER BY "startTime" DESC LIMIT 10`,
+        sql`SELECT "serviceName", COUNT(*) as cnt, SUM(price) as rev FROM "Booking" WHERE "connectionId" = ${cid} AND "serviceName" IS NOT NULL GROUP BY "serviceName" ORDER BY cnt DESC LIMIT 5`,
+        sql`SELECT SUM(total) as total FROM "Order" WHERE "connectionId" = ${cid}`,
+      ])
 
       return res.status(200).json({
         connected: true,
-        connection: {
-          siteId: connection.siteId,
-          siteName: connection.siteName,
-          siteUrl: connection.siteUrl,
-          lastSyncAt: connection.lastSyncAt,
-          syncStatus: connection.syncStatus,
-        },
-        kpis: {
-          totalRevenue: orderAgg._sum.total || 0,
-          bookings: bookingCount,
-          clients: clientCount,
-          todayBookings,
-        },
+        connection: { siteId: connection.siteId, siteName: connection.siteName, siteUrl: connection.siteUrl, lastSyncAt: connection.lastSyncAt, syncStatus: connection.syncStatus },
+        kpis: { totalRevenue: revenue[0]?.total || 0, bookings: parseInt(bookingCount[0].count), clients: parseInt(clientCount[0].count), todayBookings: parseInt(todayCount[0].count) },
         recentBookings,
-        topServices,
+        topServices: topServices.map(s => ({ serviceName: s.serviceName, _count: { serviceName: parseInt(s.cnt) }, _sum: { price: s.rev } })),
       })
     }
 
-    case 'bookings': {
-      const where = {
-        connectionId: connection.id,
-        ...(search ? {
-          OR: [
-            { clientName:  { contains: search } },
-            { serviceName: { contains: search } },
-            { staffName:   { contains: search } },
-          ],
-        } : {}),
-        ...(status ? { status } : {}),
-      }
-      const [items, total] = await Promise.all([
-        prisma.booking.findMany({ where, orderBy: { startTime: 'desc' }, skip, take }),
-        prisma.booking.count({ where }),
-      ])
-      return res.status(200).json({ items, total, page: parseInt(page), limit: take })
+    if (section === 'bookings') {
+      const where = search
+        ? sql`AND ("clientName" ILIKE ${'%'+search+'%'} OR "serviceName" ILIKE ${'%'+search+'%'})`
+        : sql``
+      const statusFilter = status ? sql`AND status = ${status}` : sql``
+      const items = await sql`SELECT * FROM "Booking" WHERE "connectionId" = ${cid} ${where} ${statusFilter} ORDER BY "startTime" DESC LIMIT 50`
+      const total = await sql`SELECT COUNT(*) as count FROM "Booking" WHERE "connectionId" = ${cid}`
+      return res.status(200).json({ items, total: parseInt(total[0].count) })
     }
 
-    case 'clients': {
-      const where = {
-        connectionId: connection.id,
-        ...(search ? {
-          OR: [
-            { name:  { contains: search } },
-            { email: { contains: search } },
-          ],
-        } : {}),
-      }
-      const [items, total] = await Promise.all([
-        prisma.client.findMany({ where, orderBy: { createdAt: 'desc' }, skip, take }),
-        prisma.client.count({ where }),
-      ])
-      return res.status(200).json({ items, total })
+    if (section === 'clients') {
+      const where = search ? sql`AND (name ILIKE ${'%'+search+'%'} OR email ILIKE ${'%'+search+'%'})` : sql``
+      const items = await sql`SELECT * FROM "Client" WHERE "connectionId" = ${cid} ${where} ORDER BY "createdAt" DESC LIMIT 50`
+      const total = await sql`SELECT COUNT(*) as count FROM "Client" WHERE "connectionId" = ${cid}`
+      return res.status(200).json({ items, total: parseInt(total[0].count) })
     }
 
-    case 'services': {
-      const items = await prisma.service.findMany({
-        where: { connectionId: connection.id },
-        orderBy: { name: 'asc' },
-      })
+    if (section === 'services') {
+      const items = await sql`SELECT * FROM "Service" WHERE "connectionId" = ${cid} ORDER BY name ASC`
       return res.status(200).json({ items })
     }
 
-    case 'orders': {
-      const where = {
-        connectionId: connection.id,
-        ...(search ? {
-          OR: [
-            { clientName:  { contains: search } },
-            { clientEmail: { contains: search } },
-          ],
-        } : {}),
-        ...(status ? { paymentStatus: status } : {}),
-      }
-      const [items, total] = await Promise.all([
-        prisma.order.findMany({ where, orderBy: { createdDate: 'desc' }, skip, take }),
-        prisma.order.count({ where }),
-      ])
-      return res.status(200).json({ items, total })
+    if (section === 'orders') {
+      const where = search ? sql`AND ("clientName" ILIKE ${'%'+search+'%'})` : sql``
+      const statusFilter = status ? sql`AND "paymentStatus" = ${status}` : sql``
+      const items = await sql`SELECT * FROM "Order" WHERE "connectionId" = ${cid} ${where} ${statusFilter} ORDER BY "createdDate" DESC LIMIT 50`
+      const total = await sql`SELECT COUNT(*) as count FROM "Order" WHERE "connectionId" = ${cid}`
+      return res.status(200).json({ items, total: parseInt(total[0].count) })
     }
 
-    case 'staff': {
-      const items = await prisma.staff.findMany({
-        where: { connectionId: connection.id },
-        orderBy: { name: 'asc' },
-      })
-
-      // Enriquece com contagem de bookings e receita por staff
-      const enriched = await Promise.all(items.map(async (s) => {
-        const agg = await prisma.booking.aggregate({
-          where: { connectionId: connection.id, staffName: { contains: s.name || '' } },
-          _count: true,
-          _sum: { price: true },
-        })
-        return {
-          ...s,
-          bookingCount: agg._count,
-          revenue: agg._sum.price || 0,
-        }
+    if (section === 'staff') {
+      const staffList = await sql`SELECT * FROM "Staff" WHERE "connectionId" = ${cid} ORDER BY name ASC`
+      const enriched = await Promise.all(staffList.map(async s => {
+        const agg = await sql`SELECT COUNT(*) as cnt, SUM(price) as rev FROM "Booking" WHERE "connectionId" = ${cid} AND "staffName" ILIKE ${'%'+(s.name||'')+'%'}`
+        return { ...s, bookingCount: parseInt(agg[0].cnt||0), revenue: parseFloat(agg[0].rev||0) }
       }))
-
       return res.status(200).json({ items: enriched })
     }
 
-    case 'payroll': {
-      const staffList = await prisma.staff.findMany({
-        where: { connectionId: connection.id },
-      })
-
-      const enriched = await Promise.all(staffList.map(async (s) => {
-        const agg = await prisma.booking.aggregate({
-          where: {
-            connectionId: connection.id,
-            staffName: { contains: s.name || '' },
-            status: { not: 'CANCELLED' },
-          },
-          _count: true,
-          _sum: { price: true },
-        })
-        const revenue = agg._sum.price || 0
-        const earnings = (revenue * (s.commission || 30)) / 100
-        return {
-          ...s,
-          bookingCount: agg._count,
-          revenue,
-          earnings: Math.round(earnings * 100) / 100,
-        }
+    if (section === 'payroll') {
+      const staffList = await sql`SELECT * FROM "Staff" WHERE "connectionId" = ${cid} ORDER BY name ASC`
+      const enriched = await Promise.all(staffList.map(async s => {
+        const agg = await sql`SELECT COUNT(*) as cnt, SUM(price) as rev FROM "Booking" WHERE "connectionId" = ${cid} AND "staffName" ILIKE ${'%'+(s.name||'')+'%'} AND status != 'CANCELED'`
+        const revenue = parseFloat(agg[0].rev||0)
+        const earnings = revenue * (s.commission||30) / 100
+        return { ...s, bookingCount: parseInt(agg[0].cnt||0), revenue, earnings: Math.round(earnings*100)/100 }
       }))
-
-      const totalPayroll = enriched.reduce((acc, s) => acc + s.earnings, 0)
-
+      const totalPayroll = enriched.reduce((a,s) => a + s.earnings, 0)
       return res.status(200).json({ items: enriched, totalPayroll })
     }
 
-    default:
-      return res.status(400).json({ error: 'Section inválida' })
+    res.status(400).json({ error: 'Section inválida' })
+  } catch (e) {
+    console.error('data error:', e.message)
+    res.status(500).json({ error: e.message })
   }
 }
