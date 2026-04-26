@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "vercel dev",
-    "build": "prisma generate",
-    "postinstall": "npx prisma generate",
-    "db:push": "prisma db push",
-    "db:seed": "node prisma/seed.js",
-    "db:studio": "prisma studio",
-    "db:reset": "prisma db push --force-reset && node prisma/seed.js"
-  },
+  "dev": "node server.js",
+  "start": "node server.js",
+  "build": "npx prisma generate",
+  "db:push": "npx prisma db push",
+  "db:seed": "node prisma/seed.js",
+  "db:studio": "npx prisma studio",
+  "db:reset": "npx prisma db push --force-reset && node prisma/seed.js"
+	},
   "prisma": {
     "seed": "node prisma/seed.js"
   },
